@@ -1,46 +1,40 @@
 const axios = require("axios");
 require("dotenv").config();
 
-// Product builder implementation
-class ProductBuilder {
+// Tax builder implementation
+class TaxBuilder {
     // Private instance variable declerations
-    #sku;
+    #name;
     #desc;
-    #salesPrice;
-    #purchasePrice;
+    #value;
 
     // Builder functions
-    setSKU(sku) {
-        this.#sku = sku;
+    setName(name) {
+        this.#name = name;
         return this;
     }
     setDescription(desc) {
         this.#desc = desc;
         return this;
     }
-    setSalesPrice(salesPrice) {
-        this.#salesPrice = salesPrice;
-        return this;
-    }
-    setPurchasePrice(purchasePrice) {
-        this.#purchasePrice = purchasePrice;
+    setValue(value) {
+        this.#value = value;
         return this;
     }
 
-    // Inserting, updating product into the system using ProductUpdate endpoint
+    // Inserting, updating tax into the system using TaxUpdate endpoint
     async insert() {
         try {
             // HTTP request with POST method
             const response = await axios({
                 method: "post",
-                url: "https://api.megaventory.com/v2017a/Product/ProductUpdate",
+                url: "https://api.megaventory.com/v2017a/Tax/TaxUpdate",
                 data: {
                     APIKEY: process.env.APIKEY,
-                    mvProduct: {
-                        ProductSKU: this.#sku,
-                        ProductDescription: this.#desc,
-                        ProductSellingPrice: this.#salesPrice,
-                        ProductPurchasePrice: this.#purchasePrice,
+                    mvTax: {
+                        TaxName: this.#name,
+                        TaxDescription: this.#desc,
+                        TaxValue: this.#value,
                     },
                     mvRecordAction: "InsertOrUpdate",
                 },
@@ -51,7 +45,7 @@ class ProductBuilder {
             switch (status.ErrorCode) {
                 // 0 -> Success
                 case "0":
-                    console.log(`The product with SKU [${this.#sku}] has been updated/inserted.`);
+                    console.log(`The tax [${this.#name}] has been updated/inserted.`);
                     break;
                 // 500 -> Error
                 case "500":
@@ -66,4 +60,4 @@ class ProductBuilder {
     }
 }
 
-module.exports = ProductBuilder;
+module.exports = TaxBuilder;

@@ -1,46 +1,40 @@
 const axios = require("axios");
 require("dotenv").config();
 
-// Product builder implementation
-class ProductBuilder {
+// Inventory location builder implementation
+class InventoryLocationBuilder {
     // Private instance variable declerations
-    #sku;
-    #desc;
-    #salesPrice;
-    #purchasePrice;
+    #name;
+    #abbr;
+    #address;
 
     // Builder functions
-    setSKU(sku) {
-        this.#sku = sku;
+    setName(name) {
+        this.#name = name;
         return this;
     }
-    setDescription(desc) {
-        this.#desc = desc;
+    setAbbreviation(abbr) {
+        this.#abbr = abbr;
         return this;
     }
-    setSalesPrice(salesPrice) {
-        this.#salesPrice = salesPrice;
-        return this;
-    }
-    setPurchasePrice(purchasePrice) {
-        this.#purchasePrice = purchasePrice;
+    setAddress(address) {
+        this.#address = address;
         return this;
     }
 
-    // Inserting, updating product into the system using ProductUpdate endpoint
+    // Inserting, updating inventory location into the system using InventoryLocationUpdate endpoint
     async insert() {
         try {
             // HTTP request with POST method
             const response = await axios({
                 method: "post",
-                url: "https://api.megaventory.com/v2017a/Product/ProductUpdate",
+                url: "https://api.megaventory.com/v2017a/InventoryLocation/InventoryLocationUpdate",
                 data: {
                     APIKEY: process.env.APIKEY,
-                    mvProduct: {
-                        ProductSKU: this.#sku,
-                        ProductDescription: this.#desc,
-                        ProductSellingPrice: this.#salesPrice,
-                        ProductPurchasePrice: this.#purchasePrice,
+                    mvInventoryLocation: {
+                        InventoryLocationName: this.#name,
+                        InventoryLocationAbbreviation: this.#abbr,
+                        InventoryLocationAddress: this.#address,
                     },
                     mvRecordAction: "InsertOrUpdate",
                 },
@@ -51,7 +45,7 @@ class ProductBuilder {
             switch (status.ErrorCode) {
                 // 0 -> Success
                 case "0":
-                    console.log(`The product with SKU [${this.#sku}] has been updated/inserted.`);
+                    console.log(`The inventory location [${this.#abbr}] has been updated/inserted.`);
                     break;
                 // 500 -> Error
                 case "500":
@@ -66,4 +60,4 @@ class ProductBuilder {
     }
 }
 
-module.exports = ProductBuilder;
+module.exports = InventoryLocationBuilder;
